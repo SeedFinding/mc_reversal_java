@@ -1,5 +1,7 @@
 package mjtb49.hashreversals;
 
+import kaptainwutax.mathutils.component.Vector;
+import kaptainwutax.seedutils.lcg.rand.JRand;
 import kaptainwutax.seedutils.mc.MCVersion;
 
 import java.math.BigDecimal;
@@ -97,20 +99,16 @@ public class MultiChunkHelper {
     }
 
     private static ArrayList<Result> findSeedsInWB(long target, long seed) {
-
         ArrayList<Result> validPositions = new ArrayList<>();
-
         long goal = (target ^ seed) & makeMask(48);
-        Random r = new Random(seed);
-        long a = (r.nextLong()|1);
-        long b = (r.nextLong()|1);
 
-        TwoDimBigVector mins = new TwoDimBigVector(-NUM_CHUNKS_IN_WB, -NUM_CHUNKS_IN_WB);
-        TwoDimBigVector maxes = new TwoDimBigVector(NUM_CHUNKS_IN_WB, NUM_CHUNKS_IN_WB);
+        JRand r = new JRand(seed);
 
-        for (TwoDimBigVector v : FindSolutionsInBox.findSolutionsInBox(a,b,goal,(1L << 48), mins, maxes)) {
-            int x = (int) v.getElement(0).longValue();
-            int z = (int) v.getElement(1).longValue();
+        Lattice2D lattice = new Lattice2D(r.nextLong() | 1L, r.nextLong() | 1L, 1L << 48);
+
+        for(Vector v: lattice.findSolutionsInBox(goal, -NUM_CHUNKS_IN_WB, -NUM_CHUNKS_IN_WB, NUM_CHUNKS_IN_WB, NUM_CHUNKS_IN_WB)) {
+            int x = v.get(0).intValue();
+            int z = v.get(1).intValue();
             if (x % 16 == 0 && z % 16 == 0)
                 validPositions.add(new Result(seed, x, z));
         }

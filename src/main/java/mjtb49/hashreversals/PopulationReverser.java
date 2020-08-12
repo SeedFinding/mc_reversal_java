@@ -1,15 +1,16 @@
 package mjtb49.hashreversals;
 
+import kaptainwutax.mathutils.solver.Hensel;
+import kaptainwutax.mathutils.util.Mth;
 import kaptainwutax.seedutils.lcg.LCG;
 import kaptainwutax.seedutils.mc.ChunkRand;
 import kaptainwutax.seedutils.mc.MCVersion;
-import kaptainwutax.seedutils.mc.seed.ChunkSeeds;
-import kaptainwutax.seedutils.util.math.Mth;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.function.LongUnaryOperator;
 
 public class PopulationReverser {
 
@@ -19,9 +20,9 @@ public class PopulationReverser {
     private static final long M4 = LCG.JAVA.combine(4).multiplier;
     private static final long A4 = LCG.JAVA.combine(4).addend;
 
-    public static int[] MOD_INVERSE = new int[(int)Mth.pow2(16)];
-    public static int[] X_TERM = new int[(int)Mth.pow2(16)];
-    public static int[] Z_TERM = new int[(int)Mth.pow2(16)];
+    public static int[] MOD_INVERSE = new int[(int)Mth.getPow2(16)];
+    public static int[] X_TERM = new int[(int)Mth.getPow2(16)];
+    public static int[] Z_TERM = new int[(int)Mth.getPow2(16)];
 
     static {
         for(int i = 0; i < MOD_INVERSE.length; i++) {
@@ -39,15 +40,15 @@ public class PopulationReverser {
         long f = populationSeed & Mth.MASK_16; //as such, we need the 16 bit groups of populationSeed for later eqns.
 
         int freeBits = Long.numberOfTrailingZeros(x | z);
-        c = populationSeed & Mth.mask(freeBits);
-        c |= freeBits == 64 ? 0 : (x ^ z ^ populationSeed) & Mth.pow2(freeBits++);
-        int increment = (int)Mth.pow2(freeBits);
+        c =  Mth.mask(populationSeed, freeBits);
+        c |= freeBits == 64 ? 0 : (x ^ z ^ populationSeed) & Mth.getPow2(freeBits++);
+        int increment = (int)Mth.getPow2(freeBits);
 
         long firstMultiplier = (M2 * x + M4 * z) & Mth.MASK_16;
         int multTrailingZeroes = Long.numberOfTrailingZeros(firstMultiplier);
 
         if(multTrailingZeroes >= 16) {
-            Hensel.Hash popHash = value -> rand.setPopulationSeed(value, x, z, version);
+            LongUnaryOperator popHash = value -> rand.setPopulationSeed(value, x, z, version);
 
             if(freeBits >= 16) {
                 Hensel.lift(c, freeBits - 16, populationSeed, 32, 16, popHash, worldSeeds);
@@ -85,8 +86,8 @@ public class PopulationReverser {
         //Does there exist a set of 16 bits which work for bits 17-32
         if(Long.numberOfTrailingZeros(firstAddend) < multTrailingZeroes)return;
 
-        long mask = Mth.mask(16 - multTrailingZeroes);
-        long increment = Mth.pow2(16 - multTrailingZeroes);
+        long mask = Mth.getMask(16 - multTrailingZeroes);
+        long increment = Mth.getPow2(16 - multTrailingZeroes);
 
         long b = (((firstMultInv * firstAddend) >>> multTrailingZeroes)^(M1 >> 16)) & mask;
 
@@ -125,7 +126,7 @@ public class PopulationReverser {
     }
 
     private static long getPartialAddend(long partialSeed, int x, int z, int bits, MCVersion version) {
-        long mask = Mth.mask(bits);
+        long mask = Mth.getMask(bits);
         long a = (int)(((M2 * ((partialSeed ^ M1) & mask) + A2) & Mth.MASK_48) >>> 16);
         long b = (int)(((M4 * ((partialSeed ^ M1) & mask) + A4) & Mth.MASK_48) >>> 16);
 
@@ -146,7 +147,7 @@ public class PopulationReverser {
     }
 
     private static long getPartialAddendPre13(long partialSeed, int x, int z, int bits) {
-        long mask = Mth.mask(bits);
+        long mask = Mth.getMask(bits);
         return  ((long)x)*(((int)(((M2 *((partialSeed^ M1)&mask) + A2) & Mth.MASK_48) >>> 16))/2*2+1) +
                 ((long)z)*(((int)(((M4 *((partialSeed^ M1)&mask) + A4) & Mth.MASK_48) >>> 16))/2*2+1);
     }
@@ -155,9 +156,9 @@ public class PopulationReverser {
         long bottom32BitsChunkseed = chunkseed & Mth.MASK_32;
 
         if (Long.numberOfTrailingZeros(firstAddend) >= multTrailingZeroes) { //Does there exist a set of 16 bits which work for bits 17-32
-            long b = ((((firstMultInv * firstAddend)>>> multTrailingZeroes)^(M1 >> 16)) & Mth.mask(16 - multTrailingZeroes));
+            long b = ((((firstMultInv * firstAddend)>>> multTrailingZeroes)^(M1 >> 16)) & Mth.getMask(16 - multTrailingZeroes));
             if (multTrailingZeroes != 0) {
-                long smallMask = Mth.mask(multTrailingZeroes);//These are longs but probably can be ints for nearly every chunk -
+                long smallMask = Mth.getMask(multTrailingZeroes);//These are longs but probably can be ints for nearly every chunk -
                 long smallMultInverse = smallMask & firstMultInv;
                 long target = (((b ^ (bottom32BitsChunkseed >>> 16)) & smallMask) -
                         (getPartialAddendPre13((b << 16) + c, x, z, 32-multTrailingZeroes)>>>16)) & smallMask;
@@ -167,7 +168,7 @@ public class PopulationReverser {
             long target2 = (bottom32BitsSeed ^ bottom32BitsChunkseed) >> 16; //now that we know b, we can undo more of the mask
             long secondAddend = (getPartialAddendPre13(bottom32BitsSeed,x, z,32) >>> 16);
             secondAddend &= Mth.MASK_16;
-            long topBits = ((((firstMultInv * (target2 - secondAddend)) >>> multTrailingZeroes) ^ (M1 >> 32)) & Mth.mask(16 - multTrailingZeroes));
+            long topBits = ((((firstMultInv * (target2 - secondAddend)) >>> multTrailingZeroes) ^ (M1 >> 32)) & Mth.getMask(16 - multTrailingZeroes));
             for(; topBits < (1L << 16); topBits += (1L << (16 - multTrailingZeroes))) { //if the previous multiplier had a power of 2 divisor, we get multiple solutions for a
                 if ((getChunkseedPre13((topBits << 32) + bottom32BitsSeed, x, z)) == (chunkseed)) { //lazy check if the test has succeeded
                     worldseeds.add((topBits << 32) + bottom32BitsSeed);

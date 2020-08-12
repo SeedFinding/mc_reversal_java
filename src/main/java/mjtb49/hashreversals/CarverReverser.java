@@ -1,27 +1,28 @@
 package mjtb49.hashreversals;
 
+import kaptainwutax.mathutils.solver.Hensel;
+import kaptainwutax.mathutils.util.Mth;
 import kaptainwutax.seedutils.mc.ChunkRand;
 import kaptainwutax.seedutils.mc.MCVersion;
-import kaptainwutax.seedutils.mc.seed.ChunkSeeds;
-import kaptainwutax.seedutils.util.math.Mth;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.LongUnaryOperator;
 
 public class CarverReverser {
 
     public static List<Long> reverse(long carverSeed, int x, int z, ChunkRand rand, MCVersion version) {
         ArrayList<Long> result = new ArrayList<>();
-        Hensel.Hash carverHash = value -> rand.setCarverSeed(value, x, z, version);
+        LongUnaryOperator carverHash = value -> rand.setCarverSeed(value, x, z, version);
 
         int freeBits = Long.numberOfTrailingZeros(x | z);
-        long c = carverSeed & Mth.mask(freeBits);
+        long c = Mth.mask(carverSeed, freeBits);
 
         if(freeBits >= 16) {
             Hensel.lift(c, freeBits - 16, carverSeed, 32, 16, carverHash, result);
         } else {
-            for(int increment = (int)Mth.pow2(freeBits); c < 1L << 16; c += increment) {
+            for(int increment = (int)Mth.getPow2(freeBits); c < 1L << 16; c += increment) {
                 Hensel.lift(c, 0, carverSeed, 32, 16, carverHash, result);
             }
         }
