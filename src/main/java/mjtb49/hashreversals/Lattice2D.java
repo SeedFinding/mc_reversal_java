@@ -12,10 +12,10 @@ import java.util.List;
 
 public class Lattice2D extends Matrix {
 
-    private final BigInteger inverseB;
-    private final BigInteger mod;
+    protected final BigInteger inverseB;
+    protected final BigInteger mod;
 
-    private final Matrix inverse;
+    protected final Matrix inverse;
 
     public Lattice2D(long a, long b, long mod) {
         this(BigInteger.valueOf(a), BigInteger.valueOf(b), BigInteger.valueOf(mod));
@@ -38,6 +38,10 @@ public class Lattice2D extends Matrix {
 
         LagrangeGauss.reduceAndSet(this);
         this.inverse = this.getInverse();
+    }
+
+    public BigInteger getMod() {
+        return this.mod;
     }
 
     protected Rational getDeterminant() {
@@ -73,10 +77,10 @@ public class Lattice2D extends Matrix {
         Rational[] transformedMins = {Rational.ZERO, Rational.ZERO};
         Rational[] transformedMaxes = {Rational.ZERO, Rational.ZERO};
 
-        for (int row = 0; row < 2; row++) {
+        for(int row = 0; row < 2; row++) {
             BigInteger minCoord = row == 0 ? minX : minZ, maxCoord = row == 0 ? maxX : maxZ;
 
-            for (int col = 0; col < 2; col++) {
+            for(int col = 0; col < 2; col++) {
                 Rational e = this.inverse.get(row, col);
                 transformedMaxes[col] = transformedMaxes[col].add(e.multiply(e.signum() >= 0 ? maxCoord : minCoord));
                 transformedMins[col] = transformedMins[col].add(e.multiply(e.signum() >= 0 ? minCoord : maxCoord));
@@ -85,8 +89,8 @@ public class Lattice2D extends Matrix {
 
         ArrayList<Vector> validCoords = new ArrayList<>();
 
-        for (long x = transformedMins[0].longValue() - 2; x < transformedMaxes[0].longValue() + 2; x++) {
-            for (long z = transformedMins[1].longValue() - 2; z < transformedMaxes[1].longValue() + 2; z++) {
+        for(long x = transformedMins[0].longValue() - 2; x < transformedMaxes[0].longValue() + 2; x++) {
+            for(long z = transformedMins[1].longValue() - 2; z < transformedMaxes[1].longValue() + 2; z++) {
                 Vector coords = new Vector(new Rational(x), new Rational(z)).multiply(this);
                 if(coords.get(0).compareTo(new Rational(minX)) < 0)continue;
                 if(coords.get(0).compareTo(new Rational(maxX)) > 0)continue;
