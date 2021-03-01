@@ -1,8 +1,8 @@
 package mjtb49.hashreversals;
 
 import kaptainwutax.mathutils.arithmetic.Rational;
-import kaptainwutax.mathutils.component.Matrix;
-import kaptainwutax.mathutils.component.Vector;
+import kaptainwutax.mathutils.component.matrix.QMatrix;
+import kaptainwutax.mathutils.component.vector.QVector;
 import kaptainwutax.mathutils.lattice.LagrangeGauss;
 import kaptainwutax.mathutils.util.Mth;
 
@@ -10,12 +10,12 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Lattice2D extends Matrix {
+public class Lattice2D extends QMatrix {
 
     protected final BigInteger inverseB;
     protected final BigInteger mod;
 
-    protected final Matrix inverse;
+    protected final QMatrix inverse;
 
     public Lattice2D(long a, long b, long mod) {
         this(BigInteger.valueOf(a), BigInteger.valueOf(b), BigInteger.valueOf(mod));
@@ -32,43 +32,45 @@ public class Lattice2D extends Matrix {
         this.inverseB = b.modInverse(mod);
 
         this.set(0, 0, Rational.ZERO);
-        this.set(0, 1, new Rational(mod));
+        this.set(0, 1, Rational.of(mod));
         this.set(1, 0, Rational.ONE);
-        this.set(1, 1, new Rational(this.inverseB.multiply(a.negate())));
+        this.set(1, 1, Rational.of(this.inverseB.multiply(a.negate())));
 
         LagrangeGauss.reduceAndSet(this);
-        this.inverse = this.getInverse();
+        this.inverse = this.invert();
     }
 
     public BigInteger getMod() {
         return this.mod;
     }
 
-    protected Rational getDeterminant() {
+    @Override
+    public Rational getDeterminant() {
         Rational a = this.get(0, 0).multiply(this.get(1, 1));
         Rational b = this.get(1, 0).multiply(this.get(0, 1));
         return a.subtract(b);
     }
 
-    public Matrix getInverse() {
+    @Override
+    public QMatrix invert() {
         if(this.inverse != null)return this.inverse;
 
         if(this.getDeterminant().compareTo(Rational.ZERO) == 0) {
             throw new IllegalStateException("Cannot invert a singular matrix");
         }
 
-        return new Matrix(this.getRowCount(), this.getColumnCount(), (row, column) -> {
+        return new QMatrix(this.getRowCount(), this.getColumnCount(), (row, column) -> {
             if(row != column)return this.get(row, column).negate();
             return this.get((row + 1) % 2, (column + 1) % 2);
         }).divideAndSet(this.getDeterminant());
     }
 
-    public List<Vector> findSolutionsInBox(long target, long minX, long minZ, long maxX, long maxZ) {
+    public List<QVector> findSolutionsInBox(long target, long minX, long minZ, long maxX, long maxZ) {
         return this.findSolutionsInBox(BigInteger.valueOf(target), BigInteger.valueOf(minX), BigInteger.valueOf(minZ),
                 BigInteger.valueOf(maxX), BigInteger.valueOf(maxZ));
     }
 
-    public List<Vector> findSolutionsInBox(BigInteger target, BigInteger minX, BigInteger minZ, BigInteger maxX, BigInteger maxZ) {
+    public List<QVector> findSolutionsInBox(BigInteger target, BigInteger minX, BigInteger minZ, BigInteger maxX, BigInteger maxZ) {
         BigInteger newZCenter = this.inverseB.multiply(target).mod(this.mod);
         minZ = minZ.subtract(newZCenter);
         maxZ = maxZ.subtract(newZCenter);
@@ -87,16 +89,16 @@ public class Lattice2D extends Matrix {
             }
         }
 
-        ArrayList<Vector> validCoords = new ArrayList<>();
+        List<QVector> validCoords = new ArrayList<>();
 
         for(long x = transformedMins[0].longValue() - 2; x < transformedMaxes[0].longValue() + 2; x++) {
             for(long z = transformedMins[1].longValue() - 2; z < transformedMaxes[1].longValue() + 2; z++) {
-                Vector coords = new Vector(new Rational(x), new Rational(z)).multiply(this);
-                if(coords.get(0).compareTo(new Rational(minX)) < 0)continue;
-                if(coords.get(0).compareTo(new Rational(maxX)) > 0)continue;
-                if(coords.get(1).compareTo(new Rational(minZ)) < 0)continue;
-                if(coords.get(1).compareTo(new Rational(maxZ)) > 0)continue;
-                validCoords.add(coords.addAndSet(new Vector(Rational.ZERO, new Rational(newZCenter))));
+                QVector coords = new QVector(Rational.of(x), Rational.of(z)).multiply(this);
+                if(coords.get(0).compareTo(Rational.of(minX)) < 0)continue;
+                if(coords.get(0).compareTo(Rational.of(maxX)) > 0)continue;
+                if(coords.get(1).compareTo(Rational.of(minZ)) < 0)continue;
+                if(coords.get(1).compareTo(Rational.of(maxZ)) > 0)continue;
+                validCoords.add(coords.addAndSet(new QVector(Rational.ZERO, Rational.of(newZCenter))));
             }
         }
 

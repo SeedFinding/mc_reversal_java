@@ -1,11 +1,9 @@
 package mjtb49.hashreversals;
 
-import kaptainwutax.mathutils.component.Vector;
+import kaptainwutax.mathutils.component.vector.QVector;
 import kaptainwutax.seedutils.lcg.rand.JRand;
 import kaptainwutax.seedutils.mc.MCVersion;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -106,7 +104,7 @@ public class MultiChunkHelper {
 
         Lattice2D lattice = new Lattice2D(r.nextLong() | 1L, r.nextLong() | 1L, 1L << 48);
 
-        for(Vector v: lattice.findSolutionsInBox(goal, -NUM_CHUNKS_IN_WB, -NUM_CHUNKS_IN_WB, NUM_CHUNKS_IN_WB, NUM_CHUNKS_IN_WB)) {
+        for(QVector v: lattice.findSolutionsInBox(goal, -NUM_CHUNKS_IN_WB, -NUM_CHUNKS_IN_WB, NUM_CHUNKS_IN_WB, NUM_CHUNKS_IN_WB)) {
             int x = v.get(0).intValue();
             int z = v.get(1).intValue();
             if (x % 16 == 0 && z % 16 == 0)

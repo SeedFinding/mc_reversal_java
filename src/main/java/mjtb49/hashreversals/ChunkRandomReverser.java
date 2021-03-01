@@ -1,6 +1,6 @@
 package mjtb49.hashreversals;
 
-import kaptainwutax.mathutils.component.Vector;
+import kaptainwutax.mathutils.component.vector.QVector;
 import kaptainwutax.mathutils.util.Mth;
 import kaptainwutax.seedutils.mc.ChunkRand;
 import kaptainwutax.seedutils.mc.MCVersion;
@@ -19,7 +19,7 @@ public final class ChunkRandomReverser {
     }
 
     public static CPos reverseTerrainSeed(long terrainSeed, int minX, int minZ, int maxX, int maxZ) {
-        List<Vector> results = REGION_LATTICE.findSolutionsInBox(terrainSeed, minX, minZ, maxX, maxZ);
+        List<QVector> results = REGION_LATTICE.findSolutionsInBox(terrainSeed, minX, minZ, maxX, maxZ);
         if(results.isEmpty())return null;
         else if(results.size() == 1)return new CPos(results.get(0).get(0).intValue(), results.get(0).get(1).intValue());
         throw new IndexOutOfBoundsException("Bounds too large to identify a unique seed. If this is actually a problem for some horrifying future version of minecraft open a github issue but as of right now this should never run so I am legally allowed to write a long and funny error message instead of something more helpful.");
