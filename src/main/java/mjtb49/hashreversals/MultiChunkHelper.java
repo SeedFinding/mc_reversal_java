@@ -1,8 +1,8 @@
 package mjtb49.hashreversals;
 
 import kaptainwutax.mathutils.component.vector.QVector;
-import kaptainwutax.seedutils.lcg.rand.JRand;
-import kaptainwutax.seedutils.mc.MCVersion;
+import kaptainwutax.mcutils.version.MCVersion;
+import kaptainwutax.seedutils.rand.JRand;
 
 import java.util.ArrayList;
 import java.util.Random;
