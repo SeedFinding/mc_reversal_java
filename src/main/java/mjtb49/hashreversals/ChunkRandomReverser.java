@@ -2,10 +2,11 @@ package mjtb49.hashreversals;
 
 import kaptainwutax.mathutils.component.vector.QVector;
 import kaptainwutax.mathutils.util.Mth;
-import kaptainwutax.seedutils.mc.ChunkRand;
-import kaptainwutax.seedutils.mc.MCVersion;
-import kaptainwutax.seedutils.mc.pos.CPos;
-import kaptainwutax.seedutils.util.UnsupportedVersion;
+import kaptainwutax.mcutils.rand.ChunkRand;
+import kaptainwutax.mcutils.util.pos.CPos;
+import kaptainwutax.mcutils.version.MCVersion;
+import kaptainwutax.mcutils.version.UnsupportedVersion;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public final class ChunkRandomReverser {
             throw new UnsupportedVersion(version, "decorator seed");
         }
 
-        return (decoratorSeed - index - 10000 * step) & Mth.MASK_48;
+        return (decoratorSeed - index - 10000L * step) & Mth.MASK_48;
     }
 
     /**

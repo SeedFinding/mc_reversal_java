@@ -10,7 +10,30 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    implementation('com.github.KaptainWutax:MathUtils:5531c4a87b0f1bb85d1dab2bdd18ce375400626a') {transitive = false}
-    implementation('com.github.KaptainWutax:SeedUtils:42cbf8558f981862a0926a09f84da24bdc4f897d') {transitive = false}
+    implementation('com.github.KaptainWutax:MathUtils:5531c4a87b0f1bb85d1dab2bdd18ce375400626a') { transitive = false }
+    implementation('com.github.KaptainWutax:SeedUtils:b6a383113ce5d8d09a59e91b28ff064fb97c0709') { transitive = false }
+    implementation('com.github.KaptainWutax:MCUtils:cb9c78e4e37e12dca0ddaefc3a7f3053dfbd237b') { transitive = false }
+
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.4.2')
+    testRuntime('org.junit.jupiter:junit-jupiter-engine:5.4.2')
+}
+
+compileJava {
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
+
+test {
+    useJUnitPlatform {
+        includeEngines("junit-jupiter")
+        maxHeapSize = "1G"
+    }
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+        outputs.upToDateWhen { false }
+        showStandardStreams = true
+        showExceptions true
+        showCauses true
+        showStackTraces true
+    }
 }

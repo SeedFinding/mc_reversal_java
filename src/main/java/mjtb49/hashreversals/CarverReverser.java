@@ -2,8 +2,8 @@ package mjtb49.hashreversals;
 
 import kaptainwutax.mathutils.solver.Hensel;
 import kaptainwutax.mathutils.util.Mth;
-import kaptainwutax.seedutils.mc.ChunkRand;
-import kaptainwutax.seedutils.mc.MCVersion;
+import kaptainwutax.mcutils.rand.ChunkRand;
+import kaptainwutax.mcutils.version.MCVersion;
 
 import java.util.ArrayList;
 import java.util.List;
