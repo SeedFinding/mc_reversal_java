@@ -93,7 +93,7 @@ public class Lattice2D extends QMatrix {
 
         for(long x = transformedMins[0].longValue() - 2; x < transformedMaxes[0].longValue() + 2; x++) {
             for(long z = transformedMins[1].longValue() - 2; z < transformedMaxes[1].longValue() + 2; z++) {
-                QVector coords = new QVector(Rational.of(x), Rational.of(z)).multiply(this);
+                QVector coords = new QVector(Rational.of(x), Rational.of(z)).multiply(this.transpose());
                 if(coords.get(0).compareTo(Rational.of(minX)) < 0)continue;
                 if(coords.get(0).compareTo(Rational.of(maxX)) > 0)continue;
                 if(coords.get(1).compareTo(Rational.of(minZ)) < 0)continue;
