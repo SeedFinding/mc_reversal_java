@@ -1,6 +1,10 @@
 package mjtb49.hashreversals;
 
+import kaptainwutax.mathutils.util.Mth;
 import kaptainwutax.mcutils.rand.ChunkRand;
+import kaptainwutax.mcutils.rand.seed.RegionSeed;
+import kaptainwutax.mcutils.rand.seed.WorldSeed;
+import kaptainwutax.mcutils.util.pos.CPos;
 import kaptainwutax.mcutils.version.MCVersion;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +15,25 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ChunkRandomReverserTest {
 	private final long TESTING_SEED = 923452555189237913L;
+
+	@Test
+	public void lattice2d() {
+		long regionSeed = 186080818078439L;
+		int salt = 14357620;
+		int bound = 100;
+		for (int regX = -bound; regX < bound; regX++) {
+			for (int regZ = -bound; regZ < bound; regZ++) {
+				long foundStructureSeed = (regionSeed - regX * RegionSeed.A - regZ * RegionSeed.B & Mth.MASK_48) - salt;
+				CPos cPos = ChunkRandomReverser.reverseRegionSeed(regionSeed, foundStructureSeed, salt, MCVersion.latest());
+				assertEquals(cPos.getX(), regX);
+				assertEquals(cPos.getZ(), regZ);
+			}
+		}
+	}
+
+	private static long moveStructure(long regionSeed, int regX, int regZ) {
+		return regionSeed - regX * RegionSeed.A - regZ * RegionSeed.B & Mth.MASK_48;
+	}
 
 	@Test
 	public void reverseTerrainSeed() {
