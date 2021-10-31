@@ -1,12 +1,28 @@
 plugins {
-    id 'java'
+    id 'signing'
+    id 'java-library'
+    id 'maven-publish'
+    id "idea"
+    id "jacoco"
+    id 'org.jetbrains.kotlin.jvm' version '1.5.31'
 }
 
-sourceCompatibility = 1.8
+group = 'com.seedfinding'
+archivesBaseName = project.name
+
+defaultTasks 'clean', 'test'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    withJavadocJar()
+    withSourcesJar()
+}
 
 repositories {
     mavenCentral()
-    maven {url "https://jitpack.io"}
+    maven { url "https://jitpack.io" }
+    maven { url "https://maven.seedfinding.com" }
 }
 
 dependencies {
@@ -14,14 +30,29 @@ dependencies {
     implementation('com.github.KaptainWutax:SeedUtils:b6a383113ce5d8d09a59e91b28ff064fb97c0709') { transitive = false }
     implementation('com.github.KaptainWutax:MCUtils:cb9c78e4e37e12dca0ddaefc3a7f3053dfbd237b') { transitive = false }
 
-    testImplementation('org.junit.jupiter:junit-jupiter-api:5.4.2')
-    testRuntime('org.junit.jupiter:junit-jupiter-engine:5.4.2')
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${jupiterVersion}")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:${jupiterVersion}")
+    testImplementation('org.junit-pioneer:junit-pioneer:1.3.8')
+
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${jupiterVersion}")
+    testRuntimeOnly('org.junit.platform:junit-platform-console:1.7.1')
 }
 
 compileJava {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
 
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
 
 test {
     useJUnitPlatform {
@@ -36,4 +67,102 @@ test {
         showCauses true
         showStackTraces true
     }
+    finalizedBy(jacocoTestReport)
+}
+
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = "$project.name"
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = "$project.name"
+                description = 'A dead simple library exposing utilities to reverse all Minecraft internal ' +
+                        'hash functions in pure Java.'
+                url = 'https://java.seedfinding.com/mcreversal'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'hube12'
+                        name = 'Neil'
+                    }
+                    developer {
+                        id = 'kaptainwutax'
+                        name = 'KaptainWutax'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:https://github.com/SeedFinding/mc_reversal_java.git'
+                    developerConnection = 'scm:git:ssh://github.com/SeedFinding/mc_reversal_java.git'
+                    url = 'https://github.com/SeedFinding/mc_reversal_java'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            def releasesRepoUrl = "https://nexus.seedfinding.com/service/rest/repository/browse/maven-seedfinding/com/seedfinding/mcreversal/"
+            def snapshotsRepoUrl = "https://nexus.seedfinding.com/service/rest/repository/browse/maven-seedfinding-snapshots/com/seedfinding/mcreversal/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
+
+signing {
+    if (signing.getSignatory() == null) {
+        System.err.println("Missing configuration driven signing key, defaulting to in memory.")
+        def signingKeyId = findProperty("signingKeyId")
+        def signingKey = findProperty("signingKey")
+        def signingPassword = findProperty("signingPassword")
+        if (signingKey == null || signingKey == null || signingPassword == null) {
+            System.err.println("Missing in memory signing key, defaulting to agent.")
+            useGpgCmd()
+            def s= signing.getSignatory()
+//			if (signing.getSignatory() == null || signing.getSignatory().getKeyId() == null) {
+//				System.err.println("Missing GPG agent.")
+//				gradle.taskGraph.whenReady { taskGraph ->
+//					tasks.findAll { t ->
+//						if (t.name == "signArchives") {
+//							t.enabled(false)
+//							System.err.println("No GPG signing agent, in memory or configuration driven GPG key were found, you can not use the sign method !")
+//						}
+//					}
+//				}
+//			}
+        } else {
+            useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+        }
+    }
+    gradle.taskGraph.whenReady { taskGraph ->
+        tasks.findAll { t ->
+            if (t.name == "signArchives") {
+                if (t.enabled) {
+                    t.doLast {
+                        println "Signing was a success, congrats !"
+                    }
+                }
+            }
+        }
+    }
+    sign publishing.publications.mavenJava
 }
