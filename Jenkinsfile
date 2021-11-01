@@ -34,7 +34,7 @@ pipeline {
                         error("*** Github commit sha1 not defined : ${COMMIT_ID} ***");
                     }
 
-                    IS_TAG = ref.startsWith("refs/tags");
+                    IS_TAG = REF.startsWith("refs/tags");
 
                     if (IS_TAG == null){
                         error("*** IS_TAG got an impossible value ${IS_TAG} ***");
