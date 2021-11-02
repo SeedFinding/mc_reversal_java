@@ -115,8 +115,8 @@ publishing {
     }
     repositories {
         maven {
-            def releasesRepoUrl = "https://nexus.seedfinding.com/service/rest/repository/browse/maven-seedfinding/com/seedfinding/mcreversal/"
-            def snapshotsRepoUrl = "https://nexus.seedfinding.com/service/rest/repository/browse/maven-seedfinding-snapshots/com/seedfinding/mcreversal/"
+            def releasesRepoUrl = "https://nexus.seedfinding.com/service/rest/repository/browse/maven-seedfinding/com/seedfinding/mc_reversal/"
+            def snapshotsRepoUrl = "https://nexus.seedfinding.com/service/rest/repository/browse/maven-seedfinding-snapshots/com/seedfinding/mc_reversal/"
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         }
     }
