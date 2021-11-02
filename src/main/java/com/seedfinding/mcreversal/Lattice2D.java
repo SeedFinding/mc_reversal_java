@@ -1,4 +1,4 @@
-package mjtb49.hashreversals;
+package com.seedfinding.mcreversal;
 
 import kaptainwutax.mathutils.arithmetic.Rational;
 import kaptainwutax.mathutils.component.matrix.QMatrix;

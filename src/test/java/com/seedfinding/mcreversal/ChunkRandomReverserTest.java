@@ -1,9 +1,8 @@
-package mjtb49.hashreversals;
+package com.seedfinding.mcreversal;
 
 import kaptainwutax.mathutils.util.Mth;
 import kaptainwutax.mcutils.rand.ChunkRand;
 import kaptainwutax.mcutils.rand.seed.RegionSeed;
-import kaptainwutax.mcutils.rand.seed.WorldSeed;
 import kaptainwutax.mcutils.util.pos.CPos;
 import kaptainwutax.mcutils.version.MCVersion;
 import org.junit.jupiter.api.Test;

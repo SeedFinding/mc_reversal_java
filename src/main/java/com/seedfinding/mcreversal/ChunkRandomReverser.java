@@ -1,4 +1,4 @@
-package mjtb49.hashreversals;
+package com.seedfinding.mcreversal;
 
 import kaptainwutax.mathutils.component.vector.QVector;
 import kaptainwutax.mathutils.util.Mth;
@@ -47,6 +47,7 @@ public final class ChunkRandomReverser {
      * @param populationSeed the population seed
      * @param x the x chunk coordinate to find the seed at
      * @param z the z chunk coordinate to find the seed at
+	 * @param version the version
      * @return list of worldseeds with the given population seed at the desired location
      */
     public static List<Long> reversePopulationSeed(long populationSeed, int x, int z, MCVersion version) {
@@ -63,6 +64,7 @@ public final class ChunkRandomReverser {
      * @param carverSeed the output of the hash
      * @param x the x coordinate of the chunk
      * @param z the z coordinate of the chunk
+	 * @param version the version
      * @return a list of worldseeds with the given carver seed at the desired location
      */
     public static List<Long> reverseCarverSeed(long carverSeed, int x, int z, MCVersion version) {
@@ -75,6 +77,7 @@ public final class ChunkRandomReverser {
      * @param chunkseed2 the second chunkseed
      * @param chunkDx the x of the second chunkseed minus the x of the first, chunk coordinates
      * @param chunkDz the z of the second chunkseed minus the z of the first, chunk coordinates
+	 * @param version the version
      * @return a list of all worldseeds and coords at which the chunkseeds can be found on those worldseeds.
      */
     public static ArrayList<MultiChunkHelper.Result> getWorldseedFromTwoChunkseeds(long chunkseed1, long chunkseed2, int chunkDx, int chunkDz, MCVersion version) {

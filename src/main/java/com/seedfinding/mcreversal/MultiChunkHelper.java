@@ -1,4 +1,4 @@
-package mjtb49.hashreversals;
+package com.seedfinding.mcreversal;
 
 import kaptainwutax.mathutils.component.vector.QVector;
 import kaptainwutax.mcutils.version.MCVersion;
