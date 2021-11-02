@@ -78,7 +78,7 @@ pipeline {
                     script {
                         sh("chmod +x gradlew");
                         sh("./gradlew clean");
-                        sh("./gradlew publishMavenJavaPublicationToMavenLocal -Pversion=${COMMIT_ID}-SNAPSHOT" + ' -Psigning.secretKeyRingFile=$FILE -Psigning.password=$PASSWORD -Psigning.keyId=$KEY_ID');
+                        sh("./gradlew publishMavenJavaPublicationToMavenLocal -Pversion=${COMMIT_ID}" + ' -Psigning.secretKeyRingFile=$FILE -Psigning.password=$PASSWORD -Psigning.keyId=$KEY_ID');
                     }
                 }
             }
@@ -313,8 +313,7 @@ pipeline {
                     script {
                         sh("chmod +x gradlew");
                         sh("./gradlew clean");
-                        def VERSION="LATEST"+(IS_TAG?"":"-SNAPSHOT");
-                        sh("./gradlew publishMavenJavaPublicationToMavenLocal -Pversion=${VERSION}" + ' -Psigning.secretKeyRingFile=$FILE -Psigning.password=$PASSWORD -Psigning.keyId=$KEY_ID');
+                        sh('./gradlew publishMavenJavaPublicationToMavenLocal -Pversion=LATEST -Psigning.secretKeyRingFile=$FILE -Psigning.password=$PASSWORD -Psigning.keyId=$KEY_ID');
                     }
                 }
             }
