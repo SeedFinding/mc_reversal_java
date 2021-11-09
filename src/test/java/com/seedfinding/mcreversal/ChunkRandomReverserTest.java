@@ -1,10 +1,10 @@
 package com.seedfinding.mcreversal;
 
-import kaptainwutax.mathutils.util.Mth;
-import kaptainwutax.mcutils.rand.ChunkRand;
-import kaptainwutax.mcutils.rand.seed.RegionSeed;
-import kaptainwutax.mcutils.util.pos.CPos;
-import kaptainwutax.mcutils.version.MCVersion;
+import com.seedfinding.mcmath.util.Mth;
+import com.seedfinding.mccore.rand.ChunkRand;
+import com.seedfinding.mccore.rand.seed.RegionSeed;
+import com.seedfinding.mccore.util.pos.CPos;
+import com.seedfinding.mccore.version.MCVersion;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;

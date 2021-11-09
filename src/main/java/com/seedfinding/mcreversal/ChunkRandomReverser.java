@@ -1,11 +1,11 @@
 package com.seedfinding.mcreversal;
 
-import kaptainwutax.mathutils.component.vector.QVector;
-import kaptainwutax.mathutils.util.Mth;
-import kaptainwutax.mcutils.rand.ChunkRand;
-import kaptainwutax.mcutils.util.pos.CPos;
-import kaptainwutax.mcutils.version.MCVersion;
-import kaptainwutax.mcutils.version.UnsupportedVersion;
+import com.seedfinding.mcmath.component.vector.QVector;
+import com.seedfinding.mcmath.util.Mth;
+import com.seedfinding.mccore.rand.ChunkRand;
+import com.seedfinding.mccore.util.pos.CPos;
+import com.seedfinding.mccore.version.MCVersion;
+import com.seedfinding.mccore.version.UnsupportedVersion;
 
 import java.util.ArrayList;
 import java.util.List;

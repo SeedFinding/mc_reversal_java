@@ -1,8 +1,8 @@
 package com.seedfinding.mcreversal;
 
-import kaptainwutax.mathutils.component.vector.QVector;
-import kaptainwutax.mcutils.version.MCVersion;
-import kaptainwutax.seedutils.rand.JRand;
+import com.seedfinding.mcmath.component.vector.QVector;
+import com.seedfinding.mccore.version.MCVersion;
+import com.seedfinding.mcseed.rand.JRand;
 
 import java.util.ArrayList;
 import java.util.Random;

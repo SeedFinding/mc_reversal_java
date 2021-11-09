@@ -1,10 +1,10 @@
 package com.seedfinding.mcreversal;
 
-import kaptainwutax.mathutils.solver.Hensel;
-import kaptainwutax.mathutils.util.Mth;
-import kaptainwutax.mcutils.rand.ChunkRand;
-import kaptainwutax.mcutils.version.MCVersion;
-import kaptainwutax.seedutils.lcg.LCG;
+import com.seedfinding.mcmath.solver.Hensel;
+import com.seedfinding.mcmath.util.Mth;
+import com.seedfinding.mccore.rand.ChunkRand;
+import com.seedfinding.mccore.version.MCVersion;
+import com.seedfinding.mcseed.lcg.LCG;
 
 import java.util.ArrayList;
 import java.util.HashSet;

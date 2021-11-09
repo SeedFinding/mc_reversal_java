@@ -1,10 +1,10 @@
 package com.seedfinding.mcreversal;
 
-import kaptainwutax.mathutils.arithmetic.Rational;
-import kaptainwutax.mathutils.component.matrix.QMatrix;
-import kaptainwutax.mathutils.component.vector.QVector;
-import kaptainwutax.mathutils.lattice.LagrangeGauss;
-import kaptainwutax.mathutils.util.Mth;
+import com.seedfinding.mcmath.arithmetic.Rational;
+import com.seedfinding.mcmath.component.matrix.QMatrix;
+import com.seedfinding.mcmath.component.vector.QVector;
+import com.seedfinding.mcmath.lattice.LagrangeGauss;
+import com.seedfinding.mcmath.util.Mth;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
